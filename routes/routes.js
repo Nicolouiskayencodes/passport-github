@@ -1,20 +1,14 @@
 const router = require('express').Router();
-const controller = require('../controllers/controller.js')
+const passport = require('passport')
 
-router.post('/login', controller.login);
+router.get('/auth/github',
+  passport.authenticate('github', { scope: [ 'user:email' ] }));
 
-router.post('/register', controller.register);
-
-router.get('/', controller.index);
-
-router.get('/login', controller.loginForm);
-
-router.get('/register', controller.registerForm);
-
-router.get('/logout', controller.logout);
-
-router.get('/login-success', controller.redirectIndex);
-
-router.get('/login-failure', controller.loginFailure);
+router.get('/auth/github/callback', 
+  passport.authenticate('github', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Successful authentication, redirect home.
+    res.redirect('/');
+  });
 
 module.exports = router;
