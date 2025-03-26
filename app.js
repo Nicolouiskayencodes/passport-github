@@ -3,6 +3,7 @@ const path = require('node:path')
 const session = require('express-session');
 const passport = require('passport');
 const routes = require('./routes/routes.js');
+require('dotenv').config();
 
 
 const app = express();
