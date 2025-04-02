@@ -2,6 +2,7 @@ const passport = require('passport');
 const GitHubStrategy = require('passport-github2').Strategy;
 const JwtStrategy = require('passport-jwt').Strategy;
 const ExtractJwt = require('passport-jwt').ExtractJwt;
+const jwt = require('jsonwebtoken');
 const pool = require('../db/pool.js')
 
 const opts = {
@@ -28,10 +29,26 @@ passport.use(new GitHubStrategy({
 },
 async function(accessToken, refreshToken, profile, done) {
   console.log(accessToken, refreshToken, profile)
-  const { rows } = await pool.query("SELECT * FROM users WHERE email = " + profile.email + ";");
+  console.log(profile.emails[0].value)
+  const { rows } = await pool.query("SELECT * FROM users WHERE email = '" + profile.emails[0].value + "';"); 
   console.log(rows)
-  // User.findOrCreate({ githubId: profile.id }, function (err, user) {
-  //   return done(err, user);
-  // });
+  const token = jwt.sign(rows[0], process.env.JWT_KEY, { expiresIn: '365d' }) 
+  console.log(token)
+  const user = rows
+  return done(null, user)
+//   try {
+//     const { rows } = await pool.query("SELECT * FROM users WHERE email = '" + profile.emails[0].value + "';"); 
+//   console.log(rows)
+//   const token = jwt.sign(rows, process.env.JWT_KEY, { expiresIn: '365d' }) 
+//   return done(err, token)
+// }
+//   catch (err) {
+//   await pool.query("INSERT INTO users (email) VALUES ('" + profile.emails[0].value + "');")
+//   const { rows } = await pool.query("SELECT * FROM users WHERE email = '" + profile.emails[0].value + "';")
+//   console.log(rows)
+//   const token = jwt.sign(rows, process.env.JWT_KEY, { expiresIn: '365d' }) 
+//   return done(err, token)
+//   }
 }
-));
+)
+);
