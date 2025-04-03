@@ -30,12 +30,21 @@ passport.use(new GitHubStrategy({
 async function(accessToken, refreshToken, profile, done) {
   console.log(accessToken, refreshToken, profile)
   console.log(profile.emails[0].value)
+  try {
   const { rows } = await pool.query("SELECT * FROM users WHERE email = '" + profile.emails[0].value + "';"); 
   console.log(rows)
-  const token = jwt.sign(rows[0], process.env.JWT_KEY, { expiresIn: '365d' }) 
-  console.log(token)
+  if (rows.length = 0) {
+   await pool.query("INSERT INTO users (email) VALUES ('" + profile.emails[0].value + "');")
+   const { rows } = await pool.query("SELECT * FROM users WHERE email = '" + profile.emails[0].value + "';")
   const user = rows
   return done(null, user)
+  }
+  return done(null, user)
+  }
+  catch (err) {
+
+    return done(err, user)
+  }
 //   try {
 //     const { rows } = await pool.query("SELECT * FROM users WHERE email = '" + profile.emails[0].value + "';"); 
 //   console.log(rows)

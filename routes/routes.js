@@ -11,6 +11,9 @@ router.get('/auth/github/callback',
   function(req, res) {
     // Successful authentication, redirect home.
     console.log(req.user)
+    const token = jwt.sign(req.user, process.env.JWT_KEY, { expiresIn: '365d' }) 
+    
+    res.status(200).json(req.user, token)
   });
 
 module.exports = router;
