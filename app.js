@@ -3,6 +3,7 @@ const path = require('node:path')
 const session = require('express-session');
 const passport = require('passport');
 const routes = require('./routes/routes.js');
+var cors = require('cors')
 require('dotenv').config();
 
 
@@ -10,8 +11,10 @@ const app = express();
 require('./config/passport')
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+app.use(cors({origin: '*'}))
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
+
 
 app.use(routes);
 

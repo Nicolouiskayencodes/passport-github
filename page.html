@@ -6,6 +6,16 @@
   <title>Document</title>
 </head>
 <body>
-  <a href="http://127.0.0.1:3000/auth/github/">Login with GitHub</a>
+  <button id="github">Login with GitHub</button>
+  <a href="http://127.0.0.1:3000/auth/github/">Link to login</a>
 </body>
+<script>
+  const button = document.querySelector("#github")
+  button.addEventListener('click', async ()=>{
+    fetch("http://127.0.0.1:3000/auth/github/",{
+      mode: "cors",
+    })
+    .then(response => {console.log(response)})
+  })
+</script>
 </html>

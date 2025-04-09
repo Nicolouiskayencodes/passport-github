@@ -32,18 +32,18 @@ async function(accessToken, refreshToken, profile, done) {
   console.log(profile.emails[0].value)
   try {
   const { rows } = await pool.query("SELECT * FROM users WHERE email = '" + profile.emails[0].value + "';"); 
-  console.log(rows)
+  const user = rows[0]
+  console.log("here", user)
   if (rows.length = 0) {
    await pool.query("INSERT INTO users (email) VALUES ('" + profile.emails[0].value + "');")
    const { rows } = await pool.query("SELECT * FROM users WHERE email = '" + profile.emails[0].value + "';")
-  const user = rows
   return done(null, user)
   }
   return done(null, user)
   }
   catch (err) {
 
-    return done(err, user)
+    return done(err, null)
   }
 //   try {
 //     const { rows } = await pool.query("SELECT * FROM users WHERE email = '" + profile.emails[0].value + "';"); 
